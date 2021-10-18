@@ -1,5 +1,5 @@
 # CNN_to_Verilog
-
+2021/10/18
 入力：condfig_input, ???.dat
 
 config_input:
@@ -25,3 +25,4 @@ shapeはCNN等で作成されるweightの形と同等で、数値は8bit整数�
 余裕なくてプログラム内にコメントかけてないです申し訳ない。
 python3 genCNN.py と実行すればverilogの出力が見られるはずです。
 その際、sample_input 内のファイルを実行ディレクトリに配置し、srcsというディレクトリを作成してください。srcsに出力されます。
+現在はバイアス項がないです。いずれ追加する予定です。

@@ -1,8 +1,7 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3.6.9
 
 import math
 import sys
-import modules
 import joblib
 import config
 import copy

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3.6.9
 # coding: UTF-8
 
 class Config:

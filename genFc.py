@@ -191,7 +191,7 @@ def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0
 	OUTPUT_FILE.write("			$display(\"exp: z0=0x%0h z1=0x%0h z2=0x%0h z3=0x%0h z4=0x%0h z5=0x%0h z6=0x%0h z7=0x%0h z8=0x%0h z9=0x%0h \",exp[0], exp[1], exp[2], exp[3], exp[4], exp[5], exp[6], exp[7], exp[8], exp[9]);\n")
 	OUTPUT_FILE.write("		end\n")
 	OUTPUT_FILE.write("		if (exp == z)begin\n")
-	OUTPUT_FILE.write("			$display(\"\\nALL Matched\\n\");\n")
+	OUTPUT_FILE.write("			$display(\"\\nPASS\\n\");\n")
 	OUTPUT_FILE.write("		end\n")
 
 	OUTPUT_FILE.write("		#10 $finish;\n")

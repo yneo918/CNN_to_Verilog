@@ -128,8 +128,8 @@ def generate_relu(OUTPUT_FILE, IN = 128, WIDTH = 8):
 	OUTPUT_FILE.write("endmodule\n\n")
 
 
-def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0, FIXED = True):
-	O_FILE_NAME = "fc_L"+str(l)+"_tb.sv"
+def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0, FIXED = True, MONITOR = False):
+	O_FILE_NAME = "tb_fc_L"+str(l)+".sv"
 
 	w = set_weight(i_file_name = i_file_name, IN = IN, OUT = OUT)
 
@@ -153,22 +153,24 @@ def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0
 			OUTPUT_FILE.write(", ")
 	OUTPUT_FILE.write("};\n")
 	OUTPUT_FILE.write("\n")
-	OUTPUT_FILE.write("		$monitor(\"")
-	for i in range(IN):
-		OUTPUT_FILE.write("x"+str(i)+"=0x%0h ")
-		if (i+1) % (IN//8) == 0:
-			OUTPUT_FILE.write("\\n")
-	for i in range(OUT):
-		OUTPUT_FILE.write("z"+str(i)+"=0x%0h ")
-	OUTPUT_FILE.write("\",")
+	if MONITOR:
+		OUTPUT_FILE.write("		$monitor(\"")
+		for i in range(IN):
+			OUTPUT_FILE.write("x"+str(i)+"=0x%0h ")
+			if (i+1) % 10  == 0:
+				OUTPUT_FILE.write("\\n")
+		OUTPUT_FILE.write("\\n")
+		for i in range(OUT):
+			OUTPUT_FILE.write("z"+str(i)+"=0x%0h ")
+		OUTPUT_FILE.write("\",")
 
-	for i in range(IN):
-		OUTPUT_FILE.write("x["+str(i)+"], ")
-	for i in range(OUT):
-		OUTPUT_FILE.write("z["+str(i)+"]")
-		if i < OUT-1:
-			OUTPUT_FILE.write(", ")
-	OUTPUT_FILE.write(");\n")
+		for i in range(IN):
+			OUTPUT_FILE.write("x["+str(i)+"], ")
+		for i in range(OUT):
+			OUTPUT_FILE.write("z["+str(i)+"]")
+			if i < OUT-1:
+				OUTPUT_FILE.write(", ")
+		OUTPUT_FILE.write(");\n")
 	x = []
 	OUTPUT_FILE.write("		#10\n")
 	OUTPUT_FILE.write("		x <= '{ ")
@@ -189,7 +191,7 @@ def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0
 	OUTPUT_FILE.write("			$display(\"exp: z0=0x%0h z1=0x%0h z2=0x%0h z3=0x%0h z4=0x%0h z5=0x%0h z6=0x%0h z7=0x%0h z8=0x%0h z9=0x%0h \",exp[0], exp[1], exp[2], exp[3], exp[4], exp[5], exp[6], exp[7], exp[8], exp[9]);\n")
 	OUTPUT_FILE.write("		end\n")
 	OUTPUT_FILE.write("		if (exp == z)begin\n")
-	OUTPUT_FILE.write("			$display(\"Matched: No Error\");\n")
+	OUTPUT_FILE.write("			$display(\"\\nALL Matched\\n\");\n")
 	OUTPUT_FILE.write("		end\n")
 
 	OUTPUT_FILE.write("		#10 $finish;\n")
@@ -212,7 +214,7 @@ def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0
 			s += tmp
 		s_list.append(s)
 		s = 0
-	OUTPUT_FILE = open("./srcs/exp","w")
+	OUTPUT_FILE = open("./srcs/exp_L"+str(l),"w")
 	for i in range(OUT):
 		if s_list[i] > 0:
 			OUTPUT_FILE.write(hex(mask & s_list[i]).lstrip("0x")+"\n")

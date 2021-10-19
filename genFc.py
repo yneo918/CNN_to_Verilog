@@ -199,8 +199,8 @@ def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0
 	OUTPUT_FILE.write("endmodule\n")
 	OUTPUT_FILE.close()
 
-	print(x)
-	print(w)
+	#print(x)
+	#print(w)
 	s = 0
 	s_list = []
 	b = WIDTH*2+int(math.ceil(math.log2(IN)))
@@ -208,7 +208,7 @@ def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0
 	for j in range(OUT):
 		for i in range(IN):
 			tmp = x[i] * w[j][i]
-			print(hex(x[i] & 0xff)+" x "+hex(w[0][i] & 0xffff)+" = "+hex(tmp & 0xffff)+" "+str(tmp))
+			#print(hex(x[i] & 0xff)+" x "+hex(w[0][i] & 0xffff)+" = "+hex(tmp & 0xffff)+" "+str(tmp))
 			s += tmp
 		s_list.append(s)
 		s = 0
@@ -218,7 +218,7 @@ def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0
 			OUTPUT_FILE.write(hex(mask & s_list[i]).lstrip("0x")+"\n")
 		else:
 			OUTPUT_FILE.write("0\n")
-	print(s_list)
-	print(hex(s_list[0]) if s_list[0] > 0 else 0)
+	#print(s_list)
+	#print(hex(s_list[0]) if s_list[0] > 0 else 0)
 
 	OUTPUT_FILE.close()

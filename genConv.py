@@ -127,7 +127,7 @@ def generate_conv_layer(config, WIDTH = 8, cin = 1, cout = 6, i_file_name = "", 
 			for j in range(math.ceil(cin*F*F/(2**i))):
 				if j == math.ceil(cin*F*F/(2**i)-1):
 					if (j+1)*2 != num:
-						OUTPUT_FILE.write("	assign tmp"+str(i).zfill(2)+"["+str(j)+"] = "+str(WIDTH)+"'(signed'(tmp"+str(i-1).zfill(2)+"["+str(j*2)+"][WIDTH-1:1]));\n")
+						OUTPUT_FILE.write("	assign tmp"+str(i).zfill(2)+"["+str(j)+"] = $signed(tmp"+str(i-1).zfill(2)+"["+str(j*2)+"]);\n")
 					else:
 						ADD = "add2 #(.I_WIDTH(WIDTH*2+"+str(i-1)+"), .O_WIDTH(WIDTH*2+"+str(i)+")) "
 						OUTPUT_FILE.write("	"+ADD+"add"+str(add_num).zfill(6)+"(.in0(tmp"+str(i-1).zfill(2)+"["+str(j*2)+"]), .in1(tmp"+str(i-1).zfill(2)+"["+str(j*2+1)+"]), .out(tmp"+str(i).zfill(2)+"["+str(j)+"]));\n")

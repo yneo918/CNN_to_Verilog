@@ -42,6 +42,7 @@ class CnnToVerilog:
 	def gen_fc_layer(self, depth=1):
 		d = self.find_layer(layer="fc", depth=depth)
 		genFc.generate_fc_layer(WIDTH = self.config.width, IN = self.config.layer[d][1], OUT = self.config.layer[d][2], l=d+1, i_file_name = "fc"+str(depth)+".dat")
+		genFc.generate_fc_layer_tb(WIDTH = self.config.width, IN = self.config.layer[d][1], OUT = self.config.layer[d][2], l=d+1, i_file_name = "fc"+str(depth)+".dat")
 	
 	def gen_fc(self):
 		genFc.generate_fc(self.config)

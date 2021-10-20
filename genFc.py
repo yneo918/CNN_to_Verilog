@@ -227,11 +227,11 @@ def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0
 
 def generate_relu_v(OUTPUT_FILE, IN = 128, OUT = 84, WIDTH = 8):
 	for i in range(OUT):
-		OUTPUT_FILE.write("	relu #(.WIDTH(WIDTH*2+$clog2(IN))) ReLU(.a(tmp"+str(i).zfill(2)+"_0_"+str(i)+"), .b("+str(int(WIDTH*2+math.ceil(math.log2(IN))))+"'h0), .sel(tmp"+str(math.ceil(math.log2(IN))).zfill(2)+"_0_i[WIDTH*2+$clog2(IN)-1]), .out(z_"+str(i)+"));\n")
+		OUTPUT_FILE.write("	relu #(.WIDTH(WIDTH*2+$clog2(IN))) ReLU"+str(i).zfill(3)+"(.a(tmp"+str(math.ceil(math.log2(IN))).zfill(2)+"_0_"+str(i)+"), .b("+str(int(WIDTH*2+math.ceil(math.log2(IN))))+"'h0), .sel(tmp"+str(math.ceil(math.log2(IN))).zfill(2)+"_0_"+str(i)+"[WIDTH*2+$clog2(IN)-1]), .out(z_"+str(i)+"));\n")
 	OUTPUT_FILE.write("endmodule\n\n")
 	
 def generate_fc_layer_v(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0):
-	O_FILE_NAME = "fc_L"+str(l)+".sv"
+	O_FILE_NAME = "fc_L"+str(l)+".v"
 
 	w = set_weight(i_file_name = i_file_name, IN = IN, OUT = OUT)
 
@@ -256,7 +256,7 @@ def generate_fc_layer_v(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0)
 	for i in range(math.ceil(math.log2(IN))+1):
 		for j in range(math.ceil(IN/(2**i))):
 			for k in range(OUT):
-				OUTPUT_FILE.write("	wire [WIDTH*2-1+"+str(i)+":0] tmp"+str(i).zfill(2)+"_"+str(i)+"_"+str(k)+";\n")
+				OUTPUT_FILE.write("	wire [WIDTH*2-1+"+str(i)+":0] tmp"+str(i).zfill(2)+"_"+str(j)+"_"+str(k)+";\n")
 	OUTPUT_FILE.write("\n")
 	MULT = "mult #(.I_WIDTH(WIDTH), .O_WIDTH(WIDTH*2))"
 	for j in range(OUT):
@@ -272,7 +272,7 @@ def generate_fc_layer_v(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0)
 						OUTPUT_FILE.write("	assign tmp"+str(i).zfill(2)+"_"+str(j)+"_"+str(k)+" = $signed(tmp"+str(i-1).zfill(2)+"_"+str(j*2)+"_"+str(k)+");\n")
 					else:
 						ADD = "add2 #(.I_WIDTH(WIDTH*2+"+str(i-1)+"), .O_WIDTH(WIDTH*2+"+str(i)+")) "
-						OUTPUT_FILE.write("	"+ADD+"add"+str(add_num).zfill(6)+"(.in0(tmp"+str(i-1).zfill(2)+"_"+str(j*2)+"_"+str(k)+"), .in1(tmp"+str(i-1).zfill(2)+"_"+str(j*2+1)+"_"+str(k)+"), .out(tmp"+str(i).zfill(2)+"_"+str(j)+"_"+str(k)+"_));\n")
+						OUTPUT_FILE.write("	"+ADD+"add"+str(add_num).zfill(6)+"(.in0(tmp"+str(i-1).zfill(2)+"_"+str(j*2)+"_"+str(k)+"), .in1(tmp"+str(i-1).zfill(2)+"_"+str(j*2+1)+"_"+str(k)+"), .out(tmp"+str(i).zfill(2)+"_"+str(j)+"_"+str(k)+"));\n")
 						add_num += 1
 					num = math.ceil(num/2)
 				else:

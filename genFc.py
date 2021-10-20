@@ -224,3 +224,61 @@ def generate_fc_layer_tb(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0
 	#print(hex(s_list[0]) if s_list[0] > 0 else 0)
 
 	OUTPUT_FILE.close()
+
+def generate_relu_v(OUTPUT_FILE, IN = 128, OUT = 84, WIDTH = 8):
+	for i in range(OUT):
+		OUTPUT_FILE.write("	relu #(.WIDTH(WIDTH*2+$clog2(IN))) ReLU(.a(tmp"+str(i).zfill(2)+"_0_"+str(i)+"), .b("+str(int(WIDTH*2+math.ceil(math.log2(IN))))+"'h0), .sel(tmp"+str(math.ceil(math.log2(IN))).zfill(2)+"_0_i[WIDTH*2+$clog2(IN)-1]), .out(z_"+str(i)+"));\n")
+	OUTPUT_FILE.write("endmodule\n\n")
+	
+def generate_fc_layer_v(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0):
+	O_FILE_NAME = "fc_L"+str(l)+".sv"
+
+	w = set_weight(i_file_name = i_file_name, IN = IN, OUT = OUT)
+
+	OUTPUT_FILE = open("./srcs/"+O_FILE_NAME,"w")
+	OUTPUT_FILE.write("module fc"+str(IN)+"_"+str(OUT)+"\n")
+	OUTPUT_FILE.write("	#(parameter WIDTH = 8)\n")
+	
+	OUTPUT_FILE.write("	(")
+	for i in range(IN):
+		OUTPUT_FILE.write("x_"+str(i)+", ")
+	for i in range(OUT):
+		OUTPUT_FILE.write("z_"+str(i))
+		if i != OUT-1:
+			OUTPUT_FILE.write(", ")
+	OUTPUT_FILE.write(" );\n")
+	OUTPUT_FILE.write("	localparam IN = "+str(IN)+", OUT = "+str(OUT)+";\n")
+	for i in range(IN):
+		OUTPUT_FILE.write("	input [WIDTH-1:0] x_"+str(i)+";\n")
+	
+	for i in range(OUT):
+		OUTPUT_FILE.write("	output [WIDTH-1:0] z_"+str(i)+";\n")
+	for i in range(math.ceil(math.log2(IN))+1):
+		for j in range(math.ceil(IN/(2**i))):
+			for k in range(OUT):
+				OUTPUT_FILE.write("	wire [WIDTH*2-1+"+str(i)+":0] tmp"+str(i).zfill(2)+"_"+str(i)+"_"+str(k)+";\n")
+	OUTPUT_FILE.write("\n")
+	MULT = "mult #(.I_WIDTH(WIDTH), .O_WIDTH(WIDTH*2))"
+	for j in range(OUT):
+		for i in range(IN):
+			OUTPUT_FILE.write("	booth_"+str(w[j][i]).zfill(4).replace("-","_")+" #(.WIDTH(WIDTH)) mul"+str(j).zfill(4)+str(i).zfill(4)+"(.x(x_"+str(i)+"), .z(tmp00_"+str(i)+"_"+str(j)+"));\n")
+	add_num = 0
+	for k in range(OUT):
+		num = IN
+		for i in range(1,math.ceil(math.log2(IN))+1):
+			for j in range(math.ceil(IN/(2**i))):
+				if j == math.ceil(IN/(2**i)-1):
+					if (j+1)*2 != num:
+						OUTPUT_FILE.write("	assign tmp"+str(i).zfill(2)+"_"+str(j)+"_"+str(k)+" = $signed(tmp"+str(i-1).zfill(2)+"_"+str(j*2)+"_"+str(k)+");\n")
+					else:
+						ADD = "add2 #(.I_WIDTH(WIDTH*2+"+str(i-1)+"), .O_WIDTH(WIDTH*2+"+str(i)+")) "
+						OUTPUT_FILE.write("	"+ADD+"add"+str(add_num).zfill(6)+"(.in0(tmp"+str(i-1).zfill(2)+"_"+str(j*2)+"_"+str(k)+"), .in1(tmp"+str(i-1).zfill(2)+"_"+str(j*2+1)+"_"+str(k)+"), .out(tmp"+str(i).zfill(2)+"_"+str(j)+"_"+str(k)+"_));\n")
+						add_num += 1
+					num = math.ceil(num/2)
+				else:
+					ADD = "add2 #(.I_WIDTH(WIDTH*2+"+str(i-1)+"), .O_WIDTH(WIDTH*2+"+str(i)+")) "
+					OUTPUT_FILE.write("	"+ADD+"add"+str(add_num).zfill(6)+"(.in0(tmp"+str(i-1).zfill(2)+"_"+str(j*2)+"_"+str(k)+"), .in1(tmp"+str(i-1).zfill(2)+"_"+str(j*2+1)+"_"+str(k)+"), .out(tmp"+str(i).zfill(2)+"_"+str(j)+"_"+str(k)+"));\n")
+					add_num += 1
+	generate_relu_v(OUTPUT_FILE, IN, OUT, WIDTH)
+
+

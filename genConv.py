@@ -30,7 +30,7 @@ def generate_conv(config):
 			s = copy.deepcopy(shape)
 			shape_list.append(s)
 		if L[0] == "fc":
-			break;
+			break
 	OUTPUT_FILE.write("	output [WIDTH-1:0] z[0:"+str(shape[0])+"-1][0:"+str(shape[2])+"-1][0:"+str(shape[1])+"-1];\n")
 	shape = copy.deepcopy(config.input_shape)
 	l = 0
@@ -68,8 +68,8 @@ def generate_conv(config):
 			shape[1] = shape[1] // 2
 			shape[2] = shape[2] // 2
 		if L[0] == "fc":
+			l -= 1
 			break;
-	l -= 1
 	OUTPUT_FILE.write("	assign z = z_L"+str(l)+";\n")
 	OUTPUT_FILE.write("\n")
 	OUTPUT_FILE.write("endmodule\n")

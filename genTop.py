@@ -58,7 +58,7 @@ def generate_top(config):
 		OUTPUT_FILE.write("	logic [WIDTH-1:0] z_conv[0:"+str(shape[0])+"-1][0:"+str(shape[2])+"-1][0:"+str(shape[1])+"-1];\n")
 		OUTPUT_FILE.write("	logic [WIDTH-1:0] z_flatten[0:"+str(shape[0])+"*"+str(shape[2])+"*"+str(shape[1])+"-1];\n")
 		if not config.fc:
-			OUTPUT_FILE.write("	output [WIDTH-1:0] z_reg[0:"+str(shape[0])+"*"+str(shape[2])+"*"+str(shape[1])+"-1];\n")
+			OUTPUT_FILE.write("	logic [WIDTH-1:0] z_reg[0:"+str(shape[0])+"*"+str(shape[2])+"*"+str(shape[1])+"-1];\n")
 	if config.fc:
 		if config.conv:
 			OUTPUT_FILE.write("	logic [WIDTH-1:0] x_fc[0:"+str(shape[0])+"*"+str(shape[2])+"*"+str(shape[1])+"-1];\n")
@@ -97,7 +97,8 @@ def generate_top(config):
 		OUTPUT_FILE.write("			end\n")
 		OUTPUT_FILE.write("		end\n")
 		OUTPUT_FILE.write("	endgenerate\n")
-		OUTPUT_FILE.write("	assign x_fc = z_flatten;\n")
+		if config.fc:
+			OUTPUT_FILE.write("	assign x_fc = z_flatten;\n")
 	elif config.fc:
 		OUTPUT_FILE.write("	demultiplexer_1d #(.WIDTH(WIDTH), .MAX("+str(config.input_shape[0])+")) demux(.x(x), .clk(clk), .en(en_in), .z(x_fc));;\n")
 	if config.fc:
@@ -111,12 +112,12 @@ def generate_top(config):
 		OUTPUT_FILE.write("	multiplexer_1d #(.WIDTH(WIDTH), .MAX("+str(config.classes)+")) mux(.x(z_reg), .clk(clk), .en(en_out), .z(z));\n")
 	elif config.conv:
 		OUTPUT_FILE.write("	generate\n")
-		OUTPUT_FILE.write("		for (i = 0; i < OUT; i++) begin\n")
+		OUTPUT_FILE.write("		for (i = 0; i < "+str(shape[0]*shape[1]*shape[2])+"; i++) begin\n")
 		OUTPUT_FILE.write("			register_n #(.N(WIDTH)) reg_out(.clk(clk), .reg_e(1'b1), .reg_in(z_flatten[i]), .reg_out(z_reg[i]));\n")
 		OUTPUT_FILE.write("		end\n")
 		OUTPUT_FILE.write("	endgenerate\n")
 		OUTPUT_FILE.write("\n")
-		OUTPUT_FILE.write("	multiplexer_1d #(.WIDTH(WIDTH), .MAX("+str(config.classes)+")) mux(.x(z_reg), .clk(clk), .en(en_out), .z(z));\n")
+		OUTPUT_FILE.write("	multiplexer_1d #(.WIDTH(WIDTH), .MAX("+str(shape[0]*shape[1]*shape[2])+")) mux(.x(z_reg), .clk(clk), .en(en_out), .z(z));\n")
 	OUTPUT_FILE.write("\n")
 	OUTPUT_FILE.write("endmodule\n")
 	OUTPUT_FILE.write("\n")

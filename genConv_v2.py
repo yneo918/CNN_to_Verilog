@@ -69,7 +69,7 @@ def generate_conv(config):
 			shape[2] = shape[2] // 2
 		if L[0] == "fc":
 			l -= 1
-			break
+			break;
 	OUTPUT_FILE.write("	assign z = z_L"+str(l)+";\n")
 	OUTPUT_FILE.write("\n")
 	OUTPUT_FILE.write("endmodule\n")

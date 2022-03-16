@@ -231,7 +231,7 @@ def generate_relu_v(OUTPUT_FILE, IN = 128, OUT = 84, WIDTH = 8):
 	OUTPUT_FILE.write("endmodule\n\n")
 	
 def generate_fc_layer_v(WIDTH = 8, IN = 256, OUT = 128, i_file_name = "", l = 0):
-	O_FILE_NAME = "fc_L"+str(l)+".v"
+	O_FILE_NAME = "fc_L"+str(l)+".sv"
 
 	w = set_weight(i_file_name = i_file_name, IN = IN, OUT = OUT)
 

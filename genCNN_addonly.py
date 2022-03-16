@@ -71,4 +71,4 @@ class CnnToVerilog:
 
 
 CNN = CnnToVerilog()
-CNN.gen_cnn()
+CNN.gen_conv_layer()

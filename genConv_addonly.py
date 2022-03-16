@@ -69,7 +69,7 @@ def generate_conv(config):
 			shape[2] = shape[2] // 2
 		if L[0] == "fc":
 			l -= 1
-			break
+			break;
 	OUTPUT_FILE.write("	assign z = z_L"+str(l)+";\n")
 	OUTPUT_FILE.write("\n")
 	OUTPUT_FILE.write("endmodule\n")
@@ -83,9 +83,9 @@ def generate_conv_layer(config, WIDTH = 8, cin = 1, cout = 6, i_file_name = "", 
 	OUTPUT_FILE.write("	#(parameter WIDTH = 8)\n")
 	OUTPUT_FILE.write("	(x, z);\n")
 	OUTPUT_FILE.write("	localparam W = "+str(W)+", H = "+str(H)+", CIN = "+str(cin)+", COUT = "+str(cout)+", F = "+str(F)+";\n")
-	OUTPUT_FILE.write("	input [WIDTH-1:0] x[0:CIN-1][0:H-1][0:W-1];\n")
+	OUTPUT_FILE.write("	input [WIDTH*2-1:0] x[0:CIN-1][0:H-1][0:W-1];\n")
 	OUTPUT_FILE.write("	output [WIDTH*2+$clog2(CIN*F*F)-1:0] z[0:COUT-1][0:H-F][0:W-F];\n")
-	OUTPUT_FILE.write("	wire [WIDTH-1:0] x_in[0:H-1][0:W-1][0:CIN*F*F-1];\n")
+	OUTPUT_FILE.write("	wire [WIDTH*2-1:0] x_in[0:H-1][0:W-1][0:CIN*F*F-1];\n")
 	OUTPUT_FILE.write("	genvar h, i, j, k;\n")
 	OUTPUT_FILE.write("	generate\n")
 	OUTPUT_FILE.write("		for (i = 0; i < H-(F-1); i++) begin\n")
@@ -112,7 +112,7 @@ def generate_conv_layer(config, WIDTH = 8, cin = 1, cout = 6, i_file_name = "", 
 		OUTPUT_FILE.write("	#(parameter WIDTH = 8)\n")
 		OUTPUT_FILE.write("	(x, z);\n")
 		OUTPUT_FILE.write("	localparam F = "+str(F)+", CIN = "+str(cin)+";\n")
-		OUTPUT_FILE.write("	input [WIDTH-1:0] x[0:CIN*F*F-1];\n")
+		OUTPUT_FILE.write("	input [WIDTH*2-1:0] x[0:CIN*F*F-1];\n")
 		OUTPUT_FILE.write("	output [WIDTH*2+$clog2(CIN*F*F)-1:0] z;\n")
 		for i in range(math.ceil(math.log2(cin*F*F))+1):
 			OUTPUT_FILE.write("	wire [WIDTH*2-1+"+str(i)+":0] tmp"+str(i).zfill(2)+"[0:"+str(math.ceil(cin*F*F/(2**i))-1)+"];\n")

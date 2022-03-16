@@ -1,0 +1,56 @@
+module layer
+	#(parameter WIDTH = 8)
+	(x, z);
+	localparam IN = 400;
+	input [WIDTH-1:0] x[0:IN-1];
+	output [WIDTH*2+$clog2(20)-1:0] z;
+	wire [WIDTH*2-1+0:0] tmp00[0:19];
+	wire [WIDTH*2-1+1:0] tmp01[0:9];
+	wire [WIDTH*2-1+2:0] tmp02[0:4];
+	wire [WIDTH*2-1+3:0] tmp03[0:2];
+	wire [WIDTH*2-1+4:0] tmp04[0:1];
+	wire [WIDTH*2-1+5:0] tmp05[0:0];
+	booth__006 #(.WIDTH(WIDTH)) mul00(.x(x[90]), .z(tmp00[0]));
+	booth__004 #(.WIDTH(WIDTH)) mul01(.x(x[120]), .z(tmp00[1]));
+	booth__004 #(.WIDTH(WIDTH)) mul02(.x(x[134]), .z(tmp00[2]));
+	booth__004 #(.WIDTH(WIDTH)) mul03(.x(x[138]), .z(tmp00[3]));
+	booth__004 #(.WIDTH(WIDTH)) mul04(.x(x[151]), .z(tmp00[4]));
+	booth__004 #(.WIDTH(WIDTH)) mul05(.x(x[159]), .z(tmp00[5]));
+	booth__004 #(.WIDTH(WIDTH)) mul06(.x(x[204]), .z(tmp00[6]));
+	booth__004 #(.WIDTH(WIDTH)) mul07(.x(x[216]), .z(tmp00[7]));
+	booth__004 #(.WIDTH(WIDTH)) mul08(.x(x[240]), .z(tmp00[8]));
+	booth_0004 #(.WIDTH(WIDTH)) mul09(.x(x[255]), .z(tmp00[9]));
+	booth__004 #(.WIDTH(WIDTH)) mul10(.x(x[259]), .z(tmp00[10]));
+	booth_0002 #(.WIDTH(WIDTH)) mul11(.x(x[279]), .z(tmp00[11]));
+	booth_0004 #(.WIDTH(WIDTH)) mul12(.x(x[292]), .z(tmp00[12]));
+	booth_0004 #(.WIDTH(WIDTH)) mul13(.x(x[297]), .z(tmp00[13]));
+	booth__004 #(.WIDTH(WIDTH)) mul14(.x(x[298]), .z(tmp00[14]));
+	booth__004 #(.WIDTH(WIDTH)) mul15(.x(x[328]), .z(tmp00[15]));
+	booth__004 #(.WIDTH(WIDTH)) mul16(.x(x[329]), .z(tmp00[16]));
+	booth__004 #(.WIDTH(WIDTH)) mul17(.x(x[375]), .z(tmp00[17]));
+	booth__004 #(.WIDTH(WIDTH)) mul18(.x(x[389]), .z(tmp00[18]));
+	booth__004 #(.WIDTH(WIDTH)) mul19(.x(x[395]), .z(tmp00[19]));
+	add2 #(.I_WIDTH(WIDTH*2+0), .O_WIDTH(WIDTH*2+1)) add000000(.in0(tmp00[0]), .in1(tmp00[1]), .out(tmp01[0]));
+	add2 #(.I_WIDTH(WIDTH*2+0), .O_WIDTH(WIDTH*2+1)) add000001(.in0(tmp00[2]), .in1(tmp00[3]), .out(tmp01[1]));
+	add2 #(.I_WIDTH(WIDTH*2+0), .O_WIDTH(WIDTH*2+1)) add000002(.in0(tmp00[4]), .in1(tmp00[5]), .out(tmp01[2]));
+	add2 #(.I_WIDTH(WIDTH*2+0), .O_WIDTH(WIDTH*2+1)) add000003(.in0(tmp00[6]), .in1(tmp00[7]), .out(tmp01[3]));
+	add2 #(.I_WIDTH(WIDTH*2+0), .O_WIDTH(WIDTH*2+1)) add000004(.in0(tmp00[8]), .in1(tmp00[9]), .out(tmp01[4]));
+	add2 #(.I_WIDTH(WIDTH*2+0), .O_WIDTH(WIDTH*2+1)) add000005(.in0(tmp00[10]), .in1(tmp00[11]), .out(tmp01[5]));
+	add2 #(.I_WIDTH(WIDTH*2+0), .O_WIDTH(WIDTH*2+1)) add000006(.in0(tmp00[12]), .in1(tmp00[13]), .out(tmp01[6]));
+	add2 #(.I_WIDTH(WIDTH*2+0), .O_WIDTH(WIDTH*2+1)) add000007(.in0(tmp00[14]), .in1(tmp00[15]), .out(tmp01[7]));
+	add2 #(.I_WIDTH(WIDTH*2+0), .O_WIDTH(WIDTH*2+1)) add000008(.in0(tmp00[16]), .in1(tmp00[17]), .out(tmp01[8]));
+	add2 #(.I_WIDTH(WIDTH*2+0), .O_WIDTH(WIDTH*2+1)) add000009(.in0(tmp00[18]), .in1(tmp00[19]), .out(tmp01[9]));
+	add2 #(.I_WIDTH(WIDTH*2+1), .O_WIDTH(WIDTH*2+2)) add000010(.in0(tmp01[0]), .in1(tmp01[1]), .out(tmp02[0]));
+	add2 #(.I_WIDTH(WIDTH*2+1), .O_WIDTH(WIDTH*2+2)) add000011(.in0(tmp01[2]), .in1(tmp01[3]), .out(tmp02[1]));
+	add2 #(.I_WIDTH(WIDTH*2+1), .O_WIDTH(WIDTH*2+2)) add000012(.in0(tmp01[4]), .in1(tmp01[5]), .out(tmp02[2]));
+	add2 #(.I_WIDTH(WIDTH*2+1), .O_WIDTH(WIDTH*2+2)) add000013(.in0(tmp01[6]), .in1(tmp01[7]), .out(tmp02[3]));
+	add2 #(.I_WIDTH(WIDTH*2+1), .O_WIDTH(WIDTH*2+2)) add000014(.in0(tmp01[8]), .in1(tmp01[9]), .out(tmp02[4]));
+	add2 #(.I_WIDTH(WIDTH*2+2), .O_WIDTH(WIDTH*2+3)) add000015(.in0(tmp02[0]), .in1(tmp02[1]), .out(tmp03[0]));
+	add2 #(.I_WIDTH(WIDTH*2+2), .O_WIDTH(WIDTH*2+3)) add000016(.in0(tmp02[2]), .in1(tmp02[3]), .out(tmp03[1]));
+	assign tmp03[2] = $signed(tmp02[4]);
+	add2 #(.I_WIDTH(WIDTH*2+3), .O_WIDTH(WIDTH*2+4)) add000017(.in0(tmp03[0]), .in1(tmp03[1]), .out(tmp04[0]));
+	assign tmp04[1] = $signed(tmp03[2]);
+	add2 #(.I_WIDTH(WIDTH*2+4), .O_WIDTH(WIDTH*2+5)) add000018(.in0(tmp04[0]), .in1(tmp04[1]), .out(tmp05[0]));
+	relu #(.WIDTH(WIDTH*2+$clog2(IN))) ReLU(.a(tmp05[0]), .b(21'h0), .sel(tmp05[0][WIDTH*2+$clog2(IN)-1]), .out(z));
+endmodule
+

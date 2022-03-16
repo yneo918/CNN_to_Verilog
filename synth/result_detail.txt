@@ -1,0 +1,12 @@
+max_time=3.9
+
+max_time=2.984
+
+max_time=5.34
+
+max_time=4.945
+
+max_time=3.915
+
+sum_time=21.084
+

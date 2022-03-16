@@ -1,0 +1,52 @@
+Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+-------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
+| Date         : Tue Mar 15 06:08:08 2022
+| Host         : lepus running 64-bit CentOS Linux release 7.9.2009 (Core)
+| Command      : report_pipeline_analysis -file ./output/fc1_75/report/pipeline2.rpt -max_added_latency 2 -include_paths_to_pipeline
+| Design       : top
+| Device       : xcvu9p-flga2104-2L-e
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Pipeline analysis report
+
+1. Report Description and Glossary
+----------------------------------
+
+Description:
+This report shows a "what-if" analysis of potential Fmax increase as a result of
+hypothetically inserting pipeline stages in the design's feed-forward paths. The
+entry for Added Latency of 0 reflects the current design performance with no
+pipeline stages added.
+
+The -report_loops option shows the slowest path within a sequential feedback loop.
+Sequential loops cannot be pipelined. These are paths starting from and ending at
+the same sequential cell, and may have zero, one, or more sequential cells in the
+feedback path.
+
+Glossary:
+Clock : The timing clock of the paths being analyzed for performance increase through pipelining
+Added Latency : Number of added pipeline stages
+Ideal Fmax : The current Fmax
+Ideal Delay : The current minimum clock period
+Requirement : The required maximum delay based on the timing constraints
+WNS : Requirement minus delay
+Added Pipe Reg : Maximum number of pipeline registers to add to the design for the given Added Latency
+Total Pipe Reg : Total number of pipeline registers to add to the clock group for the given Added Latency
+Pipeline Insertion Startpoint : Cell startpoint of path with longest delay
+Pipeline Insertion Endpoint : Cell endpoint of path with longest delay
+
+2. Maximum improvements by stage insertion
+------------------------------------------
+
+Intra-Clock Summary
++--------+---------------+------------------+------------------+------------------+-----------+----------------+----------------+-------------------------------+-----------------------------+
+| Clock  | Added Latency | Ideal Fmax (MHz) | Ideal Delay (ns) | Requirement (ns) | WNS (ns)* | Added Pipe Reg | Total Pipe Reg | Pipeline Insertion Startpoint | Pipeline Insertion Endpoint |
++--------+---------------+------------------+------------------+------------------+-----------+----------------+----------------+-------------------------------+-----------------------------+
+| vclock |       0       |      220.46      |       4.536      |       4.629      |   0.093   |       n/a      |        0       | demux/sel[6]_i_1/O            | demux/sel_reg[6]/D          |
++--------+---------------+------------------+------------------+------------------+-----------+----------------+----------------+-------------------------------+-----------------------------+
+
+
+* This is estimated WNS value. For the most accurate timing information please 
+run report_timing.
+

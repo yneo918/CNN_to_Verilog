@@ -1,0 +1,15 @@
+LAYER
+conv,3,6,5
+maxpool,2,2
+
+ACT
+ReLU
+
+INPUT
+3,32,32
+
+CLASS
+10
+
+WIDTH
+8

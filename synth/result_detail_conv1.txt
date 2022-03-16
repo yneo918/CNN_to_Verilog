@@ -1,0 +1,14 @@
+conv1_0
+time=3.810
+conv1_1
+time=3.759
+conv1_2
+time=3.889
+conv1_3
+time=3.618
+conv1_4
+time=3.900
+conv1_5
+time=3.776
+max_time=3.9
+
